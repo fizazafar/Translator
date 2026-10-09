@@ -1,4 +1,5 @@
 import gradio as gr
+from fastapi import FastAPI # 1. Import FastAPI
 from sources import translate_english_to_urdu
 
 
@@ -10,7 +11,6 @@ def translate_text(text: str) -> str:
     try:
         return translate_english_to_urdu(text.strip())
     except Exception as exc:
-        # Keep the interface usable while showing a concise error.
         return f"Translation failed: {exc}"
 
 
@@ -51,6 +51,13 @@ with gr.Blocks(title="English to Urdu Translator", theme=gr.themes.Soft()) as de
         outputs=urdu_output,
     )
 
+# 2. Create a top-level ASGI application
+app = FastAPI()
+
+# 3. Mount Gradio onto the ASGI application so the hosting platform can find it
+app = gr.mount_gradio_app(app, demo, path="/")
+
 if __name__ == "__main__":
-    # Hugging Face Spaces provides its own hosting URL.
-    demo.launch()
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+
