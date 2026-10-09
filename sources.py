@@ -19,7 +19,7 @@ def translate_english_to_urdu(text: str) -> str:
             "Hugging Face Space Settings → Secrets."
         )
 
-    model = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    model = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
     client = Groq(api_key=api_key)
 
     response = client.chat.completions.create(
